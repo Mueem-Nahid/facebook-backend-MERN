@@ -1,9 +1,12 @@
-const { validateEmail, validateLength, validateUsername } = require('../helpers/validation');
-const User = require('../models/User');
 const bcrypt = require('bcrypt');
+const jwt = require('jsonwebtoken');
+
+const User = require('../models/User');
 const { generateToken } = require('../helpers/tokens');
 const { sendVerificationEmail } = require('../helpers/mailer');
+const { validateEmail, validateLength, validateUsername } = require('../helpers/validation');
 
+// user register
 exports.register = async (req, res) => {
    try {
       const { first_name, last_name, email, username, password, bYear, bMonth, bDay, gender } = req.body;
@@ -47,9 +50,9 @@ exports.register = async (req, res) => {
          first_name, last_name, email, username: newUsername, password: cryptedPassword, bYear, bMonth, bDay, gender,
       }).save();
 
-      const emailVerificationToken = generateToken({ id: user._id.toString() }, '30m');
+      const emailVerificationToken = generateToken({ id: user._id.toString() }, '10m');
 
-      const url = `${process.env.BASE_URL}/activate/${emailVerificationToken}`; console.log("url here===> ", url)
+      const url = `${process.env.BASE_URL}/activate/${emailVerificationToken}`;
       sendVerificationEmail(user.email, user.first_name, url);
       const token = generateToken({ id: user._id.toString() }, '7d')
       res.send({
@@ -63,6 +66,23 @@ exports.register = async (req, res) => {
          message: 'Registration successfull. Activation email has been sent to your email. Please activate your account.'
       })
 
+   } catch (error) {
+      res.status(500).json({ message: error.message });
+   }
+}
+
+// activate user account
+exports.activateAccount = async (req, res) => {
+   try {
+      const { token } = req.body;
+      const user = jwt.verify(token, process.env.TOKEN_SECRET);
+      const check = await User.findById(user.id);
+      if (check.verified) {
+         return res.status(400).json({ message: 'This email has already been activated' })
+      } else {
+         await User.findByIdAndUpdate(user.id, { verified: true });
+         return res.status(200).json({ message: 'Account has been activated successfully' });
+      }
    } catch (error) {
       res.status(500).json({ message: error.message });
    }
