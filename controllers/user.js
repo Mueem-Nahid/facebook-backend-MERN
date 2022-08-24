@@ -87,3 +87,31 @@ exports.activateAccount = async (req, res) => {
       res.status(500).json({ message: error.message });
    }
 }
+
+// login user
+exports.login = async (req, res) => {
+   try {
+      const { email, password } = req.body;
+      const user = await User.findOne({ email });
+      if (!user) {
+         return res.status(400).json({ message: 'User not found' });
+      }
+      const check = await bcrypt.compare(password, user.password);
+      if (!check) {
+         return res.status(400).json({ message: 'Invalid credentials. Please try again.' });
+      }
+      const token = generateToken({ id: user._id.toString() }, '7d')
+      res.send({
+         id: user._id,
+         username: user.username,
+         picture: user.picture,
+         first_name: user.first_name,
+         last_name: user.last_name,
+         token: token,
+         verified: user.verified,
+         message: 'Registration successfull. Activation email has been sent to your email. Please activate your account.'
+      })
+   } catch (error) {
+      res.status(500).json({ message: error.message });
+   }
+}
