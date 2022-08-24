@@ -109,7 +109,7 @@ exports.login = async (req, res) => {
          last_name: user.last_name,
          token: token,
          verified: user.verified,
-         message: 'Registration successfull. Activation email has been sent to your email. Please activate your account.'
+         message: 'Login successfull.'
       })
    } catch (error) {
       res.status(500).json({ message: error.message });
