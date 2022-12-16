@@ -63,7 +63,7 @@ exports.register = async (req, res) => {
          last_name: user.last_name,
          token: token,
          verified: user.verified,
-         message: 'Registration successfull. Activation email has been sent to your email. Please activate your account.'
+         message: 'Registration successfull. Activation email has been sent to your email. Please activateForm your account.'
       })
 
    } catch (error) {
@@ -71,7 +71,7 @@ exports.register = async (req, res) => {
    }
 }
 
-// activate user account
+// activateForm user account
 exports.activateAccount = async (req, res) => {
    try {
       const {token} = req.body;
