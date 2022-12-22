@@ -123,3 +123,20 @@ exports.login = async (req, res) => {
 exports.auth = async (req, res) => {
    res.json("welcome")
 }
+
+// send verification email
+exports.sendVerificationEmail = async (req, res) => {
+   try {
+      const id = req.user.id;
+      const user = User.findById(id);
+      if (user.verified) {
+         return res.status(400).json({message: 'This email has already been activated!'})
+      }
+      const emailVerificationToken = generateToken({id: user._id.toString()}, '10m');
+      const url = `${process.env.BASE_URL}/activate/${emailVerificationToken}`;
+      sendVerificationEmail(user.email, user.first_name, url);
+      return res.status(200).json({message: 'Email verification link has been sent to your email!'});
+   } catch {
+      res.status(500).json({message: error.message});
+   }
+}
