@@ -128,7 +128,7 @@ exports.auth = async (req, res) => {
 exports.sendVerificationEmail = async (req, res) => {
    try {
       const id = req.user.id;
-      const user = User.findById(id);
+      const user = await User.findById(id);
       if (user.verified) {
          return res.status(400).json({message: 'This email has already been activated!'})
       }
