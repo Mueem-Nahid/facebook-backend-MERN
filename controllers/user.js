@@ -5,6 +5,7 @@ const User = require('../models/User');
 const {generateToken} = require('../helpers/tokens');
 const {sendVerificationEmail} = require('../helpers/mailer');
 const {validateEmail, validateLength, validateUsername} = require('../helpers/validation');
+const {use} = require("bcrypt/promises");
 
 // user register
 exports.register = async (req, res) => {
@@ -137,6 +138,23 @@ exports.sendVerificationEmail = async (req, res) => {
       sendVerificationEmail(user.email, user.first_name, url);
       return res.status(200).json({message: 'Email verification link has been sent to your email!'});
    } catch {
+      res.status(500).json({message: error.message});
+   }
+}
+
+// find user for resetting password
+exports.findUser = async (req, res) => {
+   try {
+      const {email} = req.body;
+      const user = await User.findOne({email}).select("-password"); // take everything without password
+      if (!user) {
+         return res.status(400).json({message: 'Account does not exist!'});
+      }
+      return res.status(200).json({
+         email: user.email,
+         picture: user.picture
+      });
+   } catch (err) {
       res.status(500).json({message: error.message});
    }
 }
