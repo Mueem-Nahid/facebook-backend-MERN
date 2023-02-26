@@ -170,7 +170,7 @@ exports.sendResetPasswordCode = async (req, res) => {
       await new Code({
          code,
          user: user._id,
-      });
+      }).save();
       sendVerificationCode(user.email, user.first_name, code);
       return res.status(200).json({
          message: "Reset password code has been sent to your email",
