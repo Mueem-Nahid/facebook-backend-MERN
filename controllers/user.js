@@ -2,15 +2,16 @@ const bcrypt = require('bcrypt');
 const jwt = require('jsonwebtoken');
 
 const User = require('../models/User');
+const Code = require('../models/Code');
 const {generateToken} = require('../helpers/tokens');
-const {sendVerificationEmail} = require('../helpers/mailer');
+const {sendVerificationEmail, sendVerificationCode} = require('../helpers/mailer');
 const {validateEmail, validateLength, validateUsername} = require('../helpers/validation');
-const {use} = require("bcrypt/promises");
+const {generateCode} = require("../helpers/generateCode");
 
 // user register
 exports.register = async (req, res) => {
    try {
-      const {first_name, last_name, email, username, password, bYear, bMonth, bDay, gender} = req.body;
+      const {first_name, last_name, email, password, bYear, bMonth, bDay, gender} = req.body;
 
       if (!validateEmail(email)) {
          return res.status(400).json({
@@ -64,7 +65,7 @@ exports.register = async (req, res) => {
          last_name: user.last_name,
          token: token,
          verified: user.verified,
-         message: 'Registration successfull. Activation email has been sent to your email. Please activateForm your account.'
+         message: 'Registration successful. Activation email has been sent to your email. Please activateForm your account.'
       })
 
    } catch (error) {
@@ -137,7 +138,7 @@ exports.sendVerificationEmail = async (req, res) => {
       const url = `${process.env.BASE_URL}/activate/${emailVerificationToken}`;
       sendVerificationEmail(user.email, user.first_name, url);
       return res.status(200).json({message: 'Email verification link has been sent to your email!'});
-   } catch {
+   } catch (error) {
       res.status(500).json({message: error.message});
    }
 }
@@ -155,6 +156,26 @@ exports.findUser = async (req, res) => {
          picture: user.picture
       });
    } catch (err) {
-      res.status(500).json({message: error.message});
+      res.status(500).json({message: err.message});
+   }
+}
+
+// generate code and send email
+exports.sendResetPasswordCode = async (req, res) => {
+   try {
+      const {email} = req.body;
+      const user = await User.findOne({email}).select("-password");
+      await Code.findOneAndRemove({user: user._id});
+      const code = generateCode(5);
+      await new Code({
+         code,
+         user: user._id,
+      });
+      sendVerificationCode(user.email, user.first_name, code);
+      return res.status(200).json({
+         message: "Reset password code has been sent to your email",
+      });
+   } catch (err) {
+      res.status(500).json({message: err.message});
    }
 }
