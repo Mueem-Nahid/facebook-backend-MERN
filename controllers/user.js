@@ -4,9 +4,9 @@ const jwt = require('jsonwebtoken');
 const User = require('../models/User');
 const Code = require('../models/Code');
 const {generateToken} = require('../helpers/tokens');
+const {generateCode} = require("../helpers/generateCode");
 const {sendVerificationEmail, sendVerificationCode} = require('../helpers/mailer');
 const {validateEmail, validateLength, validateUsername} = require('../helpers/validation');
-const {generateCode} = require("../helpers/generateCode");
 
 // user register
 exports.register = async (req, res) => {
@@ -177,5 +177,22 @@ exports.sendResetPasswordCode = async (req, res) => {
       });
    } catch (err) {
       res.status(500).json({message: err.message});
+   }
+}
+
+// validate reset password code
+exports.validateResetPasswordCode = async (req, res) => {
+   try {
+      const {email, code} = req.body;
+      const user = await User.findOne({email});
+      const dbCode = await Code.findOne({user: user._id});
+      if (dbCode.code !== code) {
+         return res.status(400).json({
+            message: "Verification code is wrong."
+         })
+      }
+      return res.status(200).json({message: "Ok"});
+   } catch (error) {
+      res.status(500).json({message: error.message});
    }
 }

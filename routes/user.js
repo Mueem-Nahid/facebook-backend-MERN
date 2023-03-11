@@ -1,6 +1,8 @@
 const express = require('express');
 const {authUser} = require("../middlwares/auth");
-const {auth, register, activateAccount, login, sendVerificationEmail, findUser, sendResetPasswordCode} = require('../controllers/user');
+const {auth, register, activateAccount, login, sendVerificationEmail, findUser, sendResetPasswordCode,
+   validateResetPasswordCode
+} = require('../controllers/user');
 
 const router = express.Router();
 
@@ -17,5 +19,7 @@ router.post('/sendVerificationEmail', authUser, sendVerificationEmail);
 router.post('/findUser', findUser);
 
 router.post('/sendResetPasswordCode', sendResetPasswordCode);
+
+router.post('/validateResetPasswordCode', validateResetPasswordCode);
 
 module.exports = router;
