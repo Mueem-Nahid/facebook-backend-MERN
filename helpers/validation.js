@@ -5,10 +5,7 @@ exports.validateEmail = (email) => {
 };
 
 exports.validateLength = (text, min, max) => {
-   if (text.length > max || text.length < min) {
-      return false;
-   }
-   return true;
+   return !(text.length > max || text.length < min);
 }
 
 exports.validateUsername = async (username) => {
