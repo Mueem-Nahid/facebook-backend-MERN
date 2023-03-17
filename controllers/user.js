@@ -32,7 +32,7 @@ exports.register = async (req, res) => {
       }
 
       if (!validateLength(password, 6, 20)) {
-         return sendResponse(res, 400, 'Password must be between 3 to 15 characters');
+         return sendResponse(res, 400, 'Password must be between 6 to 15 characters');
       }
 
       const cryptedPassword = await bcrypt.hash(password, 12);
@@ -182,6 +182,24 @@ exports.validateResetPasswordCode = async (req, res) => {
          return sendResponse(res, 400, "Verification code is wrong.");
       }
       return sendResponse(res, 200, "Ok.");
+   } catch (error) {
+      return sendResponse(res, 500, error.message);
+   }
+}
+
+// change password
+exports.changePassword = async (req, res) => {
+   try {
+      const {email, password} = req.body;
+      if (!validateLength(password, 6, 20)) {
+         return sendResponse(res, 400, 'Password must be between 6 to 15 characters');
+      }
+      const cryptedPassword = await bcrypt.hash(password, 12);
+      await User.findOneAndUpdate(
+         {email},
+         {password: cryptedPassword},
+      );
+      return sendResponse(res, 200, "Password updated successfully!");
    } catch (error) {
       return sendResponse(res, 500, error.message);
    }
