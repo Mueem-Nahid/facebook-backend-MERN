@@ -1,4 +1,5 @@
 const User = require("../models/User");
+const {allowedMimeTypes, maxFileSize} = require("./constants");
 
 exports.validateEmail = (email) => {
    return String(email).toLowerCase().match(/^([a-z\d\.-]+)@([a-z\d-]+)\.([a-z]{2,12})(\.[a-z]{2,12})?$/);
@@ -24,9 +25,6 @@ exports.validateUsername = async (username) => {
 }
 
 exports.validateImage = (file) => {
-   const allowedMimeTypes = ["image/jpeg", "image/png", "image/gif", "image/webp"];
-   const maxFileSize = 2 * 1024 * 1024; // 2MB in bytes
-
    if (!allowedMimeTypes.includes(file.mimetype)) {
       throw new Error("File type not supported");
    }
