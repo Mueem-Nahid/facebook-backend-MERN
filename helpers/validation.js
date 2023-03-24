@@ -11,7 +11,7 @@ exports.validateLength = (text, min, max) => {
 exports.validateUsername = async (username) => {
    let a = false;
    do {
-      let check = await User.findOne({ username });
+      let check = await User.findOne({username});
       if (check) {
          // change username
          username += (+new Date() * Math.random()).toString().substring(0, 1);
@@ -21,4 +21,17 @@ exports.validateUsername = async (username) => {
       }
    } while (a)
    return username;
+}
+
+exports.validateImage = (file) => {
+   const allowedMimeTypes = ["image/jpeg", "image/png", "image/gif", "image/webp"];
+   const maxFileSize = 2 * 1024 * 1024; // 2MB in bytes
+
+   if (!allowedMimeTypes.includes(file.mimetype)) {
+      throw new Error("File type not supported");
+   }
+   if (file.size > maxFileSize) {
+      throw new Error("File size is more than 2mb");
+   }
+   return true;
 }
