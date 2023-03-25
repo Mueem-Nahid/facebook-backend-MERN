@@ -21,8 +21,8 @@ module.exports = async function (req, res, next) {
             removeTmpFile(file.tempFilePath);
             return sendResponse(res, 500, error.message);
          }
-      })
-      // next();
+      });
+      next();
    } catch (error) {
       return sendResponse(res, 500, error.message);
    }
