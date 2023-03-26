@@ -9,4 +9,13 @@ exports.createPost = async (req, res) => {
    } catch (error) {
       return sendResponse(res, 500, error.message);
    }
+};
+
+exports.getAllPosts = async (req, res) => {
+   try {
+      const posts = await Post.find();
+      return sendResponse(res, 200, "All posts.", {posts});
+   } catch (error) {
+      return sendResponse(res, 500, error.message);
+   }
 }
