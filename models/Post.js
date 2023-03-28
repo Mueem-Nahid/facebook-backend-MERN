@@ -17,7 +17,7 @@ const postSchema = new mongoose.Schema({
       },
       user: {
          type: ObjectId,
-         ref: "User",
+         ref: "user",
          required: true,
       },
       background: {
@@ -33,7 +33,7 @@ const postSchema = new mongoose.Schema({
             },
             commentedBy: {
                type: ObjectId,
-               ref: "User",
+               ref: "user",
             },
             commentedAt: {
                type: Date,
