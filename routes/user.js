@@ -4,6 +4,7 @@ const {
    auth, register, activateAccount, login, sendVerificationEmail, findUser, sendResetPasswordCode,
    validateResetPasswordCode, changePassword
 } = require('../controllers/user');
+const {getProfile} = require("../controllers/userProfile");
 
 const router = express.Router();
 
@@ -24,5 +25,7 @@ router.post('/sendResetPasswordCode', sendResetPasswordCode);
 router.post('/validateResetPasswordCode', validateResetPasswordCode);
 
 router.post('/changePassword', changePassword);
+
+router.get('/getProfile/:username', getProfile);
 
 module.exports = router;
