@@ -8,8 +8,8 @@ exports.getProfile = async (req, res) => {
       const userProfile = await User.findOne({username}).select("-password");
       if (!userProfile)
          return sendResponse(res, 404, "User not found.");
-      const userPosts = await Post.find({user: userProfile._id}).populate("user");
-      sendResponse(res, 200, "User found.", {userProfile, userPosts});
+      const posts = await Post.find({user: userProfile._id}).populate("user");
+      return sendResponse(res, 200, "User found.", {...userProfile.toObject(), posts});
    } catch (error) {
       return sendResponse(res, 500, error.message);
    }
