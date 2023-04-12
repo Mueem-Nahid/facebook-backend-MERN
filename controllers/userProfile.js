@@ -14,3 +14,15 @@ exports.getProfile = async (req, res) => {
       return sendResponse(res, 500, error.message);
    }
 }
+
+exports.updateProfilePicture = async (req, res) => {
+   try {
+      const {url} = req.body;
+      const res = await User.findByIdAndUpdate(req.user.id, {
+         picture: url,
+      });
+      return sendResponse(res, 201, "Profile picture updated.", url);
+   } catch (error) {
+      return sendResponse(res, 500, error.message);
+   }
+}

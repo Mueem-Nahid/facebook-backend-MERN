@@ -4,7 +4,7 @@ const {
    auth, register, activateAccount, login, sendVerificationEmail, findUser, sendResetPasswordCode,
    validateResetPasswordCode, changePassword
 } = require('../controllers/user');
-const {getProfile} = require("../controllers/userProfile");
+const {getProfile, updateProfilePicture} = require("../controllers/userProfile");
 
 const router = express.Router();
 
@@ -26,6 +26,8 @@ router.post('/validateResetPasswordCode', validateResetPasswordCode);
 
 router.post('/changePassword', changePassword);
 
-router.get('/getProfile/:username',authUser, getProfile);
+router.get('/getProfile/:username', authUser, getProfile);
+
+router.post('/updateProfilePicture', authUser, updateProfilePicture);
 
 module.exports = router;
