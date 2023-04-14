@@ -8,7 +8,7 @@ exports.getProfile = async (req, res) => {
       const userProfile = await User.findOne({username}).select("-password");
       if (!userProfile)
          return sendResponse(res, 404, "User not found.");
-      const posts = await Post.find({user: userProfile._id}).populate("user");
+      const posts = await Post.find({user: userProfile._id}).populate("user").sort({createdAt: -1});
       return sendResponse(res, 200, "User found.", {...userProfile.toObject(), posts});
    } catch (error) {
       return sendResponse(res, 500, error.message);
@@ -18,10 +18,10 @@ exports.getProfile = async (req, res) => {
 exports.updateProfilePicture = async (req, res) => {
    try {
       const {url} = req.body;
-      const res = await User.findByIdAndUpdate(req.user.id, {
+      const data = await User.findByIdAndUpdate(req.user.id, {
          picture: url,
       });
-      return sendResponse(res, 201, "Profile picture updated.", url);
+      return sendResponse(res, 201, "Profile picture updated.", data);
    } catch (error) {
       return sendResponse(res, 500, error.message);
    }

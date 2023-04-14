@@ -28,6 +28,6 @@ router.post('/changePassword', changePassword);
 
 router.get('/getProfile/:username', authUser, getProfile);
 
-router.post('/updateProfilePicture', authUser, updateProfilePicture);
+router.patch('/updateProfilePicture', authUser, updateProfilePicture);
 
 module.exports = router;
