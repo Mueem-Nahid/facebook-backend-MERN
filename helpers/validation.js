@@ -20,7 +20,7 @@ exports.validateUsername = async (username) => {
       } else {
          a = false;
       }
-   } while (a)
+   } while (a || username.trim() === '')
    return username;
 }
 

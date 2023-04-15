@@ -20,7 +20,7 @@ exports.updateProfilePicture = async (req, res) => {
       const {url} = req.body;
       const data = await User.findByIdAndUpdate(req.user.id, {
          picture: url,
-      });
+      }, {new: true});
       return sendResponse(res, 201, "Profile picture updated.", data);
    } catch (error) {
       return sendResponse(res, 500, error.message);
