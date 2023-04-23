@@ -26,3 +26,15 @@ exports.updateProfilePicture = async (req, res) => {
       return sendResponse(res, 500, error.message);
    }
 }
+
+exports.updateCover = async (req, res) => {
+   try {
+      const {url} = req.body;
+      const data = await User.findByIdAndUpdate(req.user.id, {
+         cover: url,
+      }, {new: true});
+      return sendResponse(res, 201, "Cover photo updated.", data);
+   } catch (error) {
+      return sendResponse(res, 500, error.message);
+   }
+}
