@@ -44,7 +44,7 @@ exports.listImages = async (req, res) => {
 const uploadToCloudinary = async (file, path) => {
    return new Promise((resolve) => {
       cloudinary.v2.uploader.upload(file.tempFilePath, {
-         folder: path,
+         folder: path, timeout:60000
       }, (err, res) => {
          if (err) {
             removeTmpFile(file.tempFilePath);

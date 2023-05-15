@@ -2,7 +2,7 @@
 const fs = require("fs");
 
 exports.sendResponse = (res, status, message, data = null) => {
-   return res.status(status).json({message, data});
+   return res?.status(status).json({message, data});
 }
 
 exports.removeTmpFile = (filePath) => {
